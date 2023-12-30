@@ -1,0 +1,10 @@
+
+*secret*
+*.log
+cover.out
+notes.md
+
+junk/
+bin/
+mock/
+
