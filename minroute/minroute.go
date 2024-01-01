@@ -9,6 +9,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate moq -pkg mock -out mock/mock.go . Logger
+
 // Logger specifies a logging interface.
 type Logger interface {
 	Info(ctx context.Context, msg string, kv ...any)
@@ -18,16 +20,22 @@ type Logger interface {
 
 // MinRoute maps http methods and paths to handlers
 type MinRoute struct {
+	Ctx    context.Context
 	Logger Logger
-	routes map[string]map[string]http.HandlerFunc
+	Routes map[string]map[string]http.HandlerFunc
 }
 
-// New creates a router with an empty route table
-func New(lgr Logger) (rtr *MinRoute) {
+// New creates a router with an empty route table.
+//
+// And stashes a copy of context, which is usually a no-no.
+// But, breaking the rules here, as it allows for sensisibly contextual
+// error logging when something goes wrong setting a route.
+func New(ctx context.Context, lgr Logger) (rtr *MinRoute) {
 
 	rtr = &MinRoute{
+		Ctx:    ctx,
 		Logger: lgr,
-		routes: map[string]map[string]http.HandlerFunc{
+		Routes: map[string]map[string]http.HandlerFunc{
 			"GET":    map[string]http.HandlerFunc{},
 			"PUT":    map[string]http.HandlerFunc{},
 			"POST":   map[string]http.HandlerFunc{},
@@ -41,13 +49,18 @@ func New(lgr Logger) (rtr *MinRoute) {
 // ServeHTTP looks up the handler and invokes
 func (rtr *MinRoute) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
-	routes, ok := rtr.routes[request.Method]
+	routes, ok := rtr.Routes[request.Method]
 	if !ok {
 		notFound(request.Context(), writer, rtr.Logger)
 		return
 	}
 
-	handler, ok := routes[request.RequestURI]
+	if request.URL == nil {
+		notFound(request.Context(), writer, rtr.Logger)
+		return
+	}
+
+	handler, ok := routes[request.URL.Path]
 	if !ok {
 		notFound(request.Context(), writer, rtr.Logger)
 		return
@@ -59,20 +72,23 @@ func (rtr *MinRoute) ServeHTTP(writer http.ResponseWriter, request *http.Request
 // Set associates a method and path with a handler
 func (rtr *MinRoute) HandleFunc(pattern string, handler http.HandlerFunc) {
 
-	// Todo: unit!
 	split := strings.Split(pattern, " ")
 	if len(split) != 2 {
-		panic(errors.Errorf("failed to split pattern: '%s' into method and path", pattern))
+		err := errors.Errorf("failed to split pattern: '%s' into method and path", pattern)
+		rtr.Logger.Error(rtr.Ctx, "unable to set route", err)
+		return
 	}
 	method := split[0]
 	path := split[1]
 
-	_, ok := rtr.routes[method]
+	_, ok := rtr.Routes[method]
 	if !ok {
-		panic(errors.Errorf("unsupported method from pattern: '%s'", pattern))
+		err := errors.Errorf("unsupported method from pattern: '%s'", pattern)
+		rtr.Logger.Error(rtr.Ctx, "unable to set route", err)
+		return
 	}
 
-	rtr.routes[method][path] = handler
+	rtr.Routes[method][path] = handler
 }
 
 // unexported

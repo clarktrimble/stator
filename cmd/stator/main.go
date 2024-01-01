@@ -51,7 +51,7 @@ func main() {
 
 	ctx = graceful.Initialize(ctx, &wg, lgr)
 
-	rtr := minroute.New(lgr)
+	rtr := minroute.New(ctx, lgr)
 	rtr.HandleFunc("GET /config", delish.ObjHandler("config", cfg, lgr))
 	rtr.HandleFunc("GET /monitor", delish.ObjHandler("status", "ok", lgr))
 
