@@ -1,27 +1,30 @@
-package formatter
+package prometheus
 
 import (
 	"bytes"
 	"fmt"
-	"stator/entity"
 	"strings"
+
+	"stator/stat/entity"
 )
 
-// OpenMetric formats stats for consumption by Prometheus.
+// Prometheus formats stats for consumption by Prometheus.
 //
 // For example:
-// # HELP http_requests_total The total number of HTTP requests.
 // # TYPE http_requests_total counter
+// # HELP http_requests_total The total number of HTTP requests.
 // http_requests_total{method="post",code="200"} 1027 1395066363000
 // http_requests_total{method="post",code="400"}    3 1395066363000
 //
+// In the spirit of: https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format
+//
 // The following advice will be applicable at some scale?
 // https://prometheus.io/docs/instrumenting/writing_exporters/#target-labels-not-static-scraped-labels
-type OpenMetric struct {
+type Prometheus struct {
 }
 
 // Format formats stats.
-func (om OpenMetric) Format(pa entity.PointsAt) []byte {
+func (om Prometheus) Format(pa entity.PointsAt) []byte {
 
 	out := map[string][]string{}
 	ordered := []string{}
@@ -63,7 +66,7 @@ func headerDatum(pa entity.PointsAt, idx int) (hdr, dtm string) {
 	lbl := label(append(pa.Labels, pt.Labels...))
 
 	hdr = header(name, pt)
-	dtm = fmt.Sprintf("%s{%s} %s %d\n", name, lbl, pt.Value, pa.Stamp.UnixMicro())
+	dtm = fmt.Sprintf("%s{%s} %s %d\n", name, lbl, pt.Value, pa.Stamp.UnixMilli())
 	return
 }
 

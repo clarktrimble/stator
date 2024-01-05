@@ -1,14 +1,21 @@
-package collector_test
+package diskusage
 
 import (
+	"testing"
+	"time"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"stator/entity"
-	. "stator/stat/collector"
+	"stator/stat/entity"
 )
 
-var _ = Describe("Collector", func() {
+func TestDiskUsage(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "DiskUsage Suite")
+}
+
+var _ = Describe("DiskUsage", func() {
 	var (
 		du    *DiskUsage
 		stats entity.PointsAt
@@ -23,7 +30,7 @@ var _ = Describe("Collector", func() {
 
 	Describe("collecting ...", func() {
 		BeforeEach(func() {
-			stats, err = du.Collect()
+			stats, err = du.Collect(time.Time{})
 		})
 
 		When("all goes well", func() {
@@ -31,7 +38,6 @@ var _ = Describe("Collector", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(stats.Name).To(Equal("du"))
 				Expect(stats.Points).To(HaveLen(3))
-				// Todo: check moar
 			})
 		})
 	})

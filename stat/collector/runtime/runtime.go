@@ -1,4 +1,4 @@
-package collector
+package runtime
 
 import (
 	"os"
@@ -8,13 +8,12 @@ import (
 
 	"github.com/pkg/errors"
 
-	"stator/entity"
+	"stator/stat/entity"
 )
 
-type Runtime struct {
-	AppId string
-	RunId string
-}
+const (
+	name = "gort"
+)
 
 var (
 	collectible = []metric{
@@ -75,10 +74,14 @@ var (
 	}
 )
 
-func (rt Runtime) Collect() (pa entity.PointsAt, err error) {
+// Runtime collects go runtime stats.
+type Runtime struct {
+	AppId string
+	RunId string
+}
 
-	// Todo: or pass now in??
-	now := time.Now() // Todo: UTC somewhere above?
+// Collect collects stats.
+func (rt Runtime) Collect(ts time.Time) (pa entity.PointsAt, err error) {
 
 	samples := make([]metrics.Sample, len(collectible))
 	for i := range collectible {
@@ -93,8 +96,8 @@ func (rt Runtime) Collect() (pa entity.PointsAt, err error) {
 	}
 
 	pa = entity.PointsAt{
-		Name:  "gort",
-		Stamp: now,
+		Name:  name,
+		Stamp: ts,
 		Labels: entity.Labels{
 			{Key: "app_id", Val: rt.AppId},
 			{Key: "run_id", Val: rt.RunId},
@@ -122,9 +125,9 @@ func toPoints(samples []metrics.Sample) (points []entity.Point, err error) {
 		var value entity.Value
 		switch sample.Value.Kind() {
 		case metrics.KindUint64:
-			value = entity.Uint{sample.Value.Uint64()}
+			value = entity.Uint{Data: sample.Value.Uint64()}
 		case metrics.KindFloat64:
-			value = entity.Float{sample.Value.Float64()}
+			value = entity.Float{Data: sample.Value.Float64()}
 		default:
 			err = errors.Errorf("unknown metric type for: %s", sample.Name)
 			return

@@ -3,12 +3,6 @@ package main
 import (
 	"context"
 	"os"
-	"stator/consul"
-	"stator/minroute"
-	"stator/roster"
-	"stator/stat"
-	"stator/stat/collector"
-	"stator/stat/formatter"
 	"sync"
 
 	"github.com/clarktrimble/delish"
@@ -17,6 +11,14 @@ import (
 	"github.com/clarktrimble/hondo"
 	"github.com/clarktrimble/launch"
 	"github.com/clarktrimble/sabot"
+
+	"stator/minroute"
+	"stator/roster"
+	"stator/roster/registrar/consul"
+	"stator/stat"
+	"stator/stat/collector/diskusage"
+	"stator/stat/collector/runtime"
+	"stator/stat/formatter/prometheus"
 )
 
 const (
@@ -68,15 +70,15 @@ func main() {
 
 	// setup collector
 
-	svc := stat.Service{
+	svc := stat.Svc{
 		Collectors: []stat.Collector{
-			collector.Runtime{appId, runId},
-			collector.DiskUsage{[]string{"/", "/boot/efi"}},
+			runtime.Runtime{AppId: appId, RunId: runId},
+			diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}},
 		},
-		Formatter: formatter.OpenMetric{},
+		Formatter: prometheus.Prometheus{},
 		Logger:    lgr,
 	}
-	rtr.HandleFunc("GET /metrics", svc.Handle)
+	rtr.HandleFunc("GET /metrics", svc.GetStats)
 
 	// start api server and wait for shutdown
 

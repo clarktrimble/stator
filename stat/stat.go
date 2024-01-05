@@ -4,37 +4,36 @@ import (
 	"bytes"
 	"context"
 	"net/http"
+	"time"
 
-	"stator/entity"
+	"stator/stat/entity"
 )
 
-// Logger is the internal logging interface.
+// Logger specifies a logger.
 type Logger interface {
 	Error(ctx context.Context, msg string, err error, kv ...any)
 }
 
-// Formatter is the internal formatting interface.
+// Formatter specifies a stats formatter.
 type Formatter interface {
 	Format(stats entity.PointsAt) (data []byte)
 }
 
-// Collector is the internal collection interface.
+// Collector specifies a stats collector.
 type Collector interface {
-	Collect() (stats entity.PointsAt, err error)
-	// Note: cache as needed _within_ any collector as needed!  yeah?
+	Collect(time.Time) (stats entity.PointsAt, err error)
+	// Note: cache as needed _within_ any collector as needed!
 }
 
-// Todo: left public for unit, will this become true?
-
-// Service handles requests for stats
-type Service struct {
+// Svc handles requests for stats
+type Svc struct {
 	Logger     Logger
 	Formatter  Formatter
 	Collectors []Collector
 }
 
-// Handle handles http requests for stats
-func (svc *Service) Handle(writer http.ResponseWriter, request *http.Request) {
+// GetStats handles http requests for stats
+func (svc *Svc) GetStats(writer http.ResponseWriter, request *http.Request) {
 
 	ctx := request.Context()
 
@@ -45,20 +44,17 @@ func (svc *Service) Handle(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		svc.Logger.Error(ctx, "failed to write stats to response", err)
 	}
-
-	// Todo: some statsy headers are good here?
-	// Todo: responder is wanted? at all?
-	// Todo: stats/points naming is approximate?
 }
 
 // unexported
 
-func (svc *Service) runCollectors(ctx context.Context) (stats entity.Stats) {
+func (svc *Svc) runCollectors(ctx context.Context) (stats entity.Stats) {
 
 	stats = entity.Stats{}
+	now := time.Now()
 
 	for _, collector := range svc.Collectors {
-		pts, err := collector.Collect()
+		pts, err := collector.Collect(now)
 		if err != nil {
 			svc.Logger.Error(ctx, "failed to collect stats", err)
 			continue
@@ -70,11 +66,11 @@ func (svc *Service) runCollectors(ctx context.Context) (stats entity.Stats) {
 	return
 }
 
-func (svc *Service) format(stats entity.Stats) []byte {
+func (svc *Svc) format(stats entity.Stats) []byte {
 
 	buf := bytes.Buffer{}
-	for _, pts := range stats {
-		buf.Write(svc.Formatter.Format(pts))
+	for _, pa := range stats {
+		buf.Write(svc.Formatter.Format(pa))
 	}
 
 	return buf.Bytes()

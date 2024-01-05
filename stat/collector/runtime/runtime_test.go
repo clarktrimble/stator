@@ -1,18 +1,18 @@
-package collector_test
+package runtime
 
 import (
 	"testing"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"stator/entity"
-	. "stator/stat/collector"
+	"stator/stat/entity"
 )
 
-func TestCollector(t *testing.T) {
+func TestRuntime(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Collector Suite")
+	RunSpecs(t, "Runtime Suite")
 }
 
 var _ = Describe("Runtime", func() {
@@ -30,7 +30,7 @@ var _ = Describe("Runtime", func() {
 
 	Describe("collecting runtime stats", func() {
 		BeforeEach(func() {
-			stats, err = rt.Collect()
+			stats, err = rt.Collect(time.Time{})
 		})
 
 		When("all goes well", func() {
@@ -38,7 +38,6 @@ var _ = Describe("Runtime", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Expect(stats.Name).To(Equal("gort"))
 				Expect(stats.Points).To(HaveLen(9))
-				// Todo: check moar
 			})
 		})
 	})
