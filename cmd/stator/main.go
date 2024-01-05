@@ -6,6 +6,9 @@ import (
 	"stator/consul"
 	"stator/minroute"
 	"stator/roster"
+	"stator/stat"
+	"stator/stat/collector"
+	"stator/stat/formatter"
 	"sync"
 
 	"github.com/clarktrimble/delish"
@@ -44,7 +47,8 @@ func main() {
 	launch.Load(cfg, cfgPrefix, blerb)
 
 	lgr := cfg.Logger.New(os.Stdout)
-	ctx := lgr.WithFields(context.Background(), "app_id", appId, "run_id", hondo.Rand(7))
+	runId := hondo.Rand(7)
+	ctx := lgr.WithFields(context.Background(), "app_id", appId, "run_id", runId)
 	lgr.Info(ctx, "starting up", "config", cfg)
 
 	// init graceful and create router
@@ -61,6 +65,18 @@ func main() {
 	csl := cfg.Consul.New(client)
 	rstr := cfg.Roster.New("lookup", cfg.Server.Port, csl, lgr)
 	rstr.Start(ctx, &wg)
+
+	// setup collector
+
+	svc := stat.Service{
+		Collectors: []stat.Collector{
+			collector.Runtime{appId, runId},
+			collector.DiskUsage{[]string{"/", "/boot/efi"}},
+		},
+		Formatter: formatter.OpenMetric{},
+		Logger:    lgr,
+	}
+	rtr.HandleFunc("GET /metrics", svc.Handle)
 
 	// start api server and wait for shutdown
 
