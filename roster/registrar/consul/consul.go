@@ -4,8 +4,9 @@ package consul
 import (
 	"context"
 	"fmt"
-	"stator/entity"
 	"time"
+
+	"stator/roster/entity"
 )
 
 //go:generate moq -pkg mock -out mock/mock.go . Client

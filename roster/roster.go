@@ -4,11 +4,12 @@ package roster
 import (
 	"context"
 	"net"
-	"stator/entity"
 	"sync"
 	"time"
 
 	"github.com/clarktrimble/hondo"
+
+	"stator/roster/entity"
 )
 
 // Registrar specifies a registration interface.
