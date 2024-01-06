@@ -9,7 +9,7 @@ import (
 	"stator/roster/entity"
 )
 
-//go:generate moq -pkg mock -out mock/mock.go . Client
+//go:generate moq -out mock_test.go . Client
 
 const (
 	registerPath   string = "/v1/agent/service/register"
@@ -54,7 +54,7 @@ func (csl *Consul) Register(ctx context.Context, svc entity.Service) (err error)
 	// Todo: support reregister, checking first?
 	//       or could long-poll
 
-	reg := regRequest{
+	reg := register{
 		ID:      svc.NameId(),
 		Name:    svc.Name,
 		Tags:    svc.Tags,
@@ -71,10 +71,6 @@ func (csl *Consul) Register(ctx context.Context, svc entity.Service) (err error)
 
 	// Todo: unit giant and update
 	err = csl.Client.SendObject(ctx, "PUT", registerPath, reg, nil)
-	if err != nil {
-		return
-	}
-
 	return
 }
 
@@ -95,7 +91,7 @@ type check struct {
 	DeregisterCriticalServiceAfter string
 }
 
-type regRequest struct {
+type register struct {
 	ID      string
 	Name    string
 	Tags    []string
