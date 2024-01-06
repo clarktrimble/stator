@@ -12,6 +12,8 @@ import (
 	"stator/roster/entity"
 )
 
+//go:generate moq -out mock_test.go . Registrar Logger
+
 // Registrar specifies a registration interface.
 type Registrar interface {
 	Register(ctx context.Context, svc entity.Service) (err error)
@@ -30,6 +32,7 @@ type ServiceConfig struct {
 	Id          string   `json:"id" desc:"unique to service id" required:"true"`
 	Name        string   `json:"name" desc:"name" required:"true"`
 	Tags        []string `json:"tags" desc:"tags" required:"true"`
+	IpAddress   string   `json:"ip_address" desc:"ip address of service" default:"lookup"`
 	MonitorSpec string   `json:"monitor_spec" desc:"specifier for monitor endpoint uri" default:"http://%s:%d/monitor"`
 }
 
@@ -48,8 +51,9 @@ type Roster struct {
 }
 
 // New creates a Roster from Config.
-func (cfg *Config) New(ip string, port int, registrar Registrar, lgr Logger) *Roster {
+func (cfg *Config) New(port int, registrar Registrar, lgr Logger) *Roster {
 
+	ip := cfg.Service.IpAddress
 	if ip == "lookup" {
 		ip = getIp()
 	}
@@ -76,7 +80,7 @@ func (roster *Roster) Start(ctx context.Context, wg *sync.WaitGroup) {
 
 	err := roster.Service.Valid()
 	if err != nil {
-		roster.Logger.Error(ctx, "invalid service description", err)
+		roster.Logger.Error(ctx, "worker abort", err, "name", "roster")
 		return
 	}
 
@@ -131,7 +135,7 @@ func (roster *Roster) unregister(ctx context.Context) {
 	}
 }
 
-func getIp() (ip string) {
+func getIp() string {
 
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {

@@ -65,10 +65,10 @@ func main() {
 
 	client := cfg.Client.NewWithTrippers(lgr)
 	csl := cfg.Consul.New(client)
-	rstr := cfg.Roster.New("lookup", cfg.Server.Port, csl, lgr)
+	rstr := cfg.Roster.New(cfg.Server.Port, csl, lgr)
 	rstr.Start(ctx, &wg)
 
-	// setup collector
+	// setup stats expositor
 
 	svc := stat.Svc{
 		Collectors: []stat.Collector{
