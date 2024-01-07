@@ -31,7 +31,7 @@ type Logger interface {
 type ServiceConfig struct {
 	Id          string   `json:"id" desc:"unique to service id" required:"true"`
 	Name        string   `json:"name" desc:"name" required:"true"`
-	Tags        []string `json:"tags" desc:"tags" required:"true"`
+	Tags        []string `json:"tags" desc:"tags"`
 	IpAddress   string   `json:"ip_address" desc:"ip address of service" default:"lookup"`
 	MonitorSpec string   `json:"monitor_spec" desc:"specifier for monitor endpoint uri" default:"http://%s:%d/monitor"`
 }
