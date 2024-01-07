@@ -1,23 +1,19 @@
 package stat
 
+// Todo: rename w svc
+
 import (
 	"bytes"
 	"context"
 	"net/http"
 	"time"
 
+	"stator/stat/collector/runtime"
 	"stator/stat/entity"
+	"stator/stat/formatter/prometheus"
 )
 
-// Logger specifies a logger.
-type Logger interface {
-	Error(ctx context.Context, msg string, err error, kv ...any)
-}
-
-// Formatter specifies a stats formatter.
-type Formatter interface {
-	Format(stats entity.PointsAt) (data []byte)
-}
+//go:generate moq -out mock_test.go . Collector Formatter Router Logger
 
 // Collector specifies a stats collector.
 type Collector interface {
@@ -25,11 +21,49 @@ type Collector interface {
 	// Note: cache as needed _within_ any collector as needed!
 }
 
+// Formatter specifies a stats formatter.
+type Formatter interface {
+	Format(stats entity.PointsAt) (data []byte)
+}
+
+// Router specifies an http router.
+type Router interface {
+	HandleFunc(pattern string, handler http.HandlerFunc)
+}
+
+// Logger specifies a logger.
+type Logger interface {
+	Error(ctx context.Context, msg string, err error, kv ...any)
+}
+
 // Svc handles requests for stats
 type Svc struct {
-	Logger     Logger
-	Formatter  Formatter
 	Collectors []Collector
+	Formatter  Formatter
+	Logger     Logger
+}
+
+// ExposeRuntime is a convienience function that creates a stats service
+// that collects runtime stats and exposes them via "/metrics" in prometheus format.
+func ExposeRuntime(appId, runId string, rtr Router, lgr Logger) (svc *Svc) {
+
+	svc = &Svc{
+		Collectors: []Collector{
+			runtime.Runtime{AppId: appId, RunId: runId},
+		},
+		Formatter: prometheus.Prometheus{},
+		Logger:    lgr,
+	}
+
+	rtr.HandleFunc("GET /metrics", svc.GetStats)
+
+	return
+}
+
+// AddCollector adds a collector.
+func (svc *Svc) AddCollector(collector Collector) {
+
+	svc.Collectors = append(svc.Collectors, collector)
 }
 
 // GetStats handles http requests for stats

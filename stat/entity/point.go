@@ -51,7 +51,7 @@ type Point struct {
 	Value  Value
 }
 
-// PointsAt are points collected at the same time.
+// PointsAt are points with a common root name and labels collected at the same time.
 type PointsAt struct {
 	Name   string
 	Stamp  time.Time
@@ -61,3 +61,5 @@ type PointsAt struct {
 
 // Stats are a collection unrelated PointsAt.
 type Stats []PointsAt
+
+// Todo: wring hands over name and ref

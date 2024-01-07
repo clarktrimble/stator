@@ -17,8 +17,6 @@ import (
 	"stator/roster/registrar/consul"
 	"stator/stat"
 	"stator/stat/collector/diskusage"
-	"stator/stat/collector/runtime"
-	"stator/stat/formatter/prometheus"
 )
 
 const (
@@ -70,15 +68,8 @@ func main() {
 
 	// setup stats expositor
 
-	svc := stat.Svc{
-		Collectors: []stat.Collector{
-			runtime.Runtime{AppId: appId, RunId: runId},
-			diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}},
-		},
-		Formatter: prometheus.Prometheus{},
-		Logger:    lgr,
-	}
-	rtr.HandleFunc("GET /metrics", svc.GetStats)
+	svc := stat.ExposeRuntime(appId, runId, rtr, lgr)
+	svc.AddCollector(diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}})
 
 	// start api server and wait for shutdown
 

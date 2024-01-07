@@ -129,7 +129,7 @@ func toPoints(samples []metrics.Sample) (points []entity.Point, err error) {
 		case metrics.KindFloat64:
 			value = entity.Float{Data: sample.Value.Float64()}
 		default:
-			err = errors.Errorf("unknown metric type for: %s", sample.Name)
+			err = errors.Errorf("unknown go runtime stat type for: %s", sample.Name)
 			return
 		}
 
