@@ -1,4 +1,4 @@
-package minroute_test
+package minroute
 
 import (
 	"context"
@@ -9,9 +9,6 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	. "stator/minroute"
-	"stator/minroute/mock"
 )
 
 func TestMinRoute(t *testing.T) {
@@ -22,14 +19,14 @@ func TestMinRoute(t *testing.T) {
 var _ = Describe("MinRoute", func() {
 	var (
 		ctx context.Context
-		lgr *mock.LoggerMock
+		lgr *LoggerMock
 		rtr *MinRoute
 	)
 
 	BeforeEach(func() {
 		ctx = context.Background()
 
-		lgr = &mock.LoggerMock{
+		lgr = &LoggerMock{
 			ErrorFunc: func(ctx context.Context, msg string, err error, kv ...any) {},
 		}
 

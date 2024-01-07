@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:generate moq -pkg mock -out mock/mock.go . Logger
+//go:generate moq -out mock_test.go . Logger
 
 // Logger specifies a logging interface.
 type Logger interface {
