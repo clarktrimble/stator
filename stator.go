@@ -1,6 +1,5 @@
-package stat
-
-// Todo: rename w svc
+// Package stator is a metrics service layer.
+package stator
 
 import (
 	"bytes"
@@ -8,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"stator/stat/collector/runtime"
-	"stator/stat/entity"
-	"stator/stat/formatter/prometheus"
+	"stator/collector/runtime"
+	"stator/entity"
+	"stator/formatter/prometheus"
 )
 
 //go:generate moq -out mock_test.go . Collector Formatter Router Logger

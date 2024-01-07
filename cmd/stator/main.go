@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"os"
+	"stator"
 	"sync"
 
 	"github.com/clarktrimble/delish"
@@ -12,11 +13,10 @@ import (
 	"github.com/clarktrimble/launch"
 	"github.com/clarktrimble/sabot"
 
+	"stator/collector/diskusage"
 	"stator/minroute"
 	"stator/roster"
 	"stator/roster/registrar/consul"
-	"stator/stat"
-	"stator/stat/collector/diskusage"
 )
 
 const (
@@ -68,7 +68,7 @@ func main() {
 
 	// setup stats expositor
 
-	svc := stat.ExposeRuntime(appId, runId, rtr, lgr)
+	svc := stator.ExposeRuntime(appId, runId, rtr, lgr)
 	svc.AddCollector(diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}})
 
 	// start api server and wait for shutdown

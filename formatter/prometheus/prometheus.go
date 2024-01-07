@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"stator/stat/entity"
+	"stator/entity"
 )
 
 // Prometheus formats stats for consumption by Prometheus.

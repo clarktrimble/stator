@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"stator/stat/entity"
+	"stator/entity"
 )
 
 const (

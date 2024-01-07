@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"stator/stat/entity"
+	"stator/entity"
 )
 
 func TestRuntime(t *testing.T) {

@@ -1,4 +1,4 @@
-package stat
+package stator
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"stator/stat/collector/runtime"
-	"stator/stat/entity"
-	"stator/stat/formatter/prometheus"
+	"stator/collector/runtime"
+	"stator/entity"
+	"stator/formatter/prometheus"
 )
 
 func TestStat(t *testing.T) {
