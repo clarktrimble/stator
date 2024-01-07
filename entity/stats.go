@@ -1,6 +1,5 @@
+// Package entity defines entities free of non-stdlib deps.
 package entity
-
-// Todo: namespace entity/metric(stat)
 
 import (
 	"fmt"
@@ -25,6 +24,7 @@ func (val Uint) String() string {
 // Float holds float64 values.
 type Float struct {
 	Data float64
+	// Note: could carry precision, etc.
 }
 
 // String implements Stringer.
@@ -61,5 +61,3 @@ type PointsAt struct {
 
 // Stats are a collection unrelated PointsAt.
 type Stats []PointsAt
-
-// Todo: wring hands over name and ref
