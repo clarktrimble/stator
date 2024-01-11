@@ -32,12 +32,13 @@ var (
 )
 
 type Config struct {
-	Version string         `json:"version" ignored:"true"`
-	Logger  *sabot.Config  `json:"logger"`
-	Client  *giant.Config  `json:"consul_http_client"`
-	Consul  *consul.Config `json:"consul"`
-	Roster  *roster.Config `json:"roster"`
-	Server  *delish.Config `json:"http_server"`
+	Version   string            `json:"version" ignored:"true"`
+	Logger    *sabot.Config     `json:"logger"`
+	Client    *giant.Config     `json:"consul_http_client"`
+	Consul    *consul.Config    `json:"consul"`
+	Roster    *roster.Config    `json:"roster"`
+	DiskUsage *diskusage.Config `json:"disk_usage"`
+	Server    *delish.Config    `json:"http_server"`
 }
 
 func main() {
@@ -70,7 +71,7 @@ func main() {
 	// setup stats expositor
 
 	svc := stator.ExposeRuntime(appId, runId, rtr, lgr)
-	svc.AddCollector(&diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}})
+	svc.AddCollector(cfg.DiskUsage.New())
 	svc.AddCollector(wave.New())
 
 	// start api server and wait for shutdown

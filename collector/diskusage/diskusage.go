@@ -13,9 +13,20 @@ const (
 	name = "du"
 )
 
+type Config struct {
+	Paths []string `json:"paths" desc:"filesystem paths to collect usage stats" default:"/"`
+}
+
 // DiskUsage collects disk usage stats.
 type DiskUsage struct {
 	Paths []string
+}
+
+func (cfg *Config) New() *DiskUsage {
+
+	return &DiskUsage{
+		Paths: cfg.Paths,
+	}
 }
 
 // Collect collects stats.

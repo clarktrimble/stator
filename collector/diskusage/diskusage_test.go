@@ -17,19 +17,31 @@ func TestDiskUsage(t *testing.T) {
 
 var _ = Describe("DiskUsage", func() {
 	var (
+		cfg   *Config
 		du    *DiskUsage
 		stats entity.PointsAt
 		err   error
 	)
 
 	BeforeEach(func() {
-		du = &DiskUsage{
+		cfg = &Config{
 			Paths: []string{"/"},
 		}
+
+		du = cfg.New()
 	})
 
-	Describe("collecting ...", func() {
-		BeforeEach(func() {
+	Describe("creating a collector", func() {
+		It("collects stats", func() {
+			Expect(du).To(Equal(&DiskUsage{
+				Paths: []string{"/"},
+			}))
+		})
+	})
+
+	Describe("collecting stats", func() {
+
+		JustBeforeEach(func() {
 			stats, err = du.Collect(time.Time{})
 		})
 
@@ -40,6 +52,17 @@ var _ = Describe("DiskUsage", func() {
 				Expect(stats.Points).To(HaveLen(3))
 			})
 		})
+
+		When("no such filesystem", func() {
+			BeforeEach(func() {
+				du.Paths = []string{"/", "/bargle"}
+			})
+
+			It("returns error", func() {
+				Expect(err).To(HaveOccurred())
+			})
+		})
+
 	})
 
 })
