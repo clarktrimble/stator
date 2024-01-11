@@ -62,8 +62,12 @@ func (om Prometheus) Format(pa entity.PointsAt) []byte {
 func headerDatum(pa entity.PointsAt, idx int) (hdr, dtm string) {
 
 	pt := pa.Points[idx]
-	name := fmt.Sprintf("%s_%s_%s", pa.Name, pt.Name, pt.Unit)
 	lbl := label(append(pa.Labels, pt.Labels...))
+
+	name := fmt.Sprintf("%s_%s", pa.Name, pt.Name)
+	if pt.Unit != "" {
+		name = fmt.Sprintf("%s_%s", name, pt.Unit)
+	}
 
 	hdr = header(name, pt)
 	dtm = fmt.Sprintf("%s{%s} %s %d\n", name, lbl, pt.Value, pa.Stamp.UnixMilli())
