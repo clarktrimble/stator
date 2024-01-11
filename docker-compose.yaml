@@ -1,0 +1,45 @@
+services:
+  consul:
+    image: hashicorp/consul:1.17.1
+    ports:
+    - 8500:8500
+    networks:
+    - labneh
+  prom:
+    build:
+      context: .
+      dockerfile: etc/prom.Dockerfile
+    ports:
+    - 9090:9090
+    networks:
+    - labneh
+  graf:
+    image: grafana/grafana-enterprise:10.2.3
+    ports:
+    - 3000:3000
+    networks:
+    - labneh
+  stator:
+    build:
+      context: .
+      dockerfile: etc/stator.Dockerfile
+    env_file:
+      etc/stator.env
+    ports:
+    - 8087:8087
+    networks:
+    - labneh
+  godev:
+    build:
+      context: .
+      dockerfile: etc/godev.Dockerfile
+    networks:
+    - labneh
+    volumes:
+    - .:/project
+    - ~/go/pkg/mod:/go/pkg/mod
+    working_dir: /project
+
+networks:
+  labneh:
+
