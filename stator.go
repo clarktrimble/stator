@@ -48,7 +48,7 @@ func ExposeRuntime(appId, runId string, rtr Router, lgr Logger) (svc *Svc) {
 
 	svc = &Svc{
 		Collectors: []Collector{
-			runtime.Runtime{AppId: appId, RunId: runId},
+			&runtime.Runtime{AppId: appId, RunId: runId},
 		},
 		Formatter: prometheus.Prometheus{},
 		Logger:    lgr,

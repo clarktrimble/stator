@@ -81,7 +81,7 @@ type Runtime struct {
 }
 
 // Collect collects stats.
-func (rt Runtime) Collect(ts time.Time) (pa entity.PointsAt, err error) {
+func (rt *Runtime) Collect(ts time.Time) (pa entity.PointsAt, err error) {
 
 	samples := make([]metrics.Sample, len(collectible))
 	for i := range collectible {

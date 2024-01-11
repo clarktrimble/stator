@@ -55,7 +55,7 @@ var _ = Describe("Stat", func() {
 			It("creates the service and registers route", func() {
 				Expect(svc).To(Equal(&Svc{
 					Collectors: []Collector{
-						runtime.Runtime{AppId: "bargla", RunId: "456"},
+						&runtime.Runtime{AppId: "bargla", RunId: "456"},
 					},
 					Formatter: prometheus.Prometheus{},
 					Logger:    lgr,

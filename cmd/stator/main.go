@@ -14,6 +14,7 @@ import (
 	"github.com/clarktrimble/sabot"
 
 	"stator/collector/diskusage"
+	"stator/collector/wave"
 	"stator/minroute"
 	"stator/roster"
 	"stator/roster/registrar/consul"
@@ -69,7 +70,8 @@ func main() {
 	// setup stats expositor
 
 	svc := stator.ExposeRuntime(appId, runId, rtr, lgr)
-	svc.AddCollector(diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}})
+	svc.AddCollector(&diskusage.DiskUsage{Paths: []string{"/", "/boot/efi"}})
+	svc.AddCollector(wave.New())
 
 	// start api server and wait for shutdown
 

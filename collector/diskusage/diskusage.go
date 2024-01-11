@@ -19,7 +19,7 @@ type DiskUsage struct {
 }
 
 // Collect collects stats.
-func (du DiskUsage) Collect(ts time.Time) (pa entity.PointsAt, err error) {
+func (du *DiskUsage) Collect(ts time.Time) (pa entity.PointsAt, err error) {
 
 	pa = entity.PointsAt{
 		Name:   name,
