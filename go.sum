@@ -3,8 +3,8 @@ github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5P
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
 github.com/clarktrimble/delish v0.0.2 h1:FU8t0M0RMpIh4kxyO9TazuMtz+bm2ofOKdnkhDP1G6Y=
 github.com/clarktrimble/delish v0.0.2/go.mod h1:czlRAc+rC+5ng9Smf4VoM5qOI2wbo9PopKKSpup+oEY=
-github.com/clarktrimble/giant v0.0.5-0.20231228220548-29379abb4759 h1:lkS+JyF9MYSkGjQ1bl98A3XyI3ysotJ5lo8ZzJahEJU=
-github.com/clarktrimble/giant v0.0.5-0.20231228220548-29379abb4759/go.mod h1:yhZ+EtS0qaJ42hED7hTJNvxCXbO7uAn9TYnq59cwtG8=
+github.com/clarktrimble/giant v0.0.5 h1:BfN5j63SOgW+t8CLmJqFsLUEeca/GekjKElFcdK1gCI=
+github.com/clarktrimble/giant v0.0.5/go.mod h1:yhZ+EtS0qaJ42hED7hTJNvxCXbO7uAn9TYnq59cwtG8=
 github.com/clarktrimble/hondo v0.0.2 h1:qkMa1ck0EJcQoNnUlnA7fKo3FcdM1VggWnaC2s/6YnA=
 github.com/clarktrimble/hondo v0.0.2/go.mod h1:wsp4GvBXObPbxX+kloKVPEu9rpxbSvkGhagSvUCX9Sk=
 github.com/clarktrimble/launch v0.0.3 h1:lrcnaWYab9+GhtwQyhTolYgSW5WPyffKqEdQScCMu90=
