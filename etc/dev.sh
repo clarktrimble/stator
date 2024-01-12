@@ -4,5 +4,5 @@ export STTR_LOGGER_MAXLEN=999
 export STTR_CLIENT_BASEURI=http://localhost:8500
 export STTR_ROSTER_SERVICE_ID="123654"
 export STTR_ROSTER_SERVICE_NAME="stator"
-export STTR_ROSTER_SERVICE_TAGS="one,two"
+export STTR_ROSTER_SERVICE_TAGS="dev,metrics"
 export STTR_DISKUSAGE_PATHS="/,/boot/efi"
