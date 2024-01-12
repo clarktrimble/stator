@@ -39,8 +39,6 @@ func New() *Wave {
 // Collect collects stats.
 func (wv *Wave) Collect(ts time.Time) (pa entity.PointsAt, err error) {
 
-	// Todo: wring hands about ref to collector elsewheres
-
 	points := make([]entity.Point, len(wv.series))
 	for i, srs := range wv.series {
 

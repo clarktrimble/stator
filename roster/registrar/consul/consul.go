@@ -69,7 +69,6 @@ func (csl *Consul) Register(ctx context.Context, svc entity.Service) (err error)
 		},
 	}
 
-	// Todo: unit giant and update
 	err = csl.Client.SendObject(ctx, "PUT", registerPath, reg, nil)
 	return
 }
