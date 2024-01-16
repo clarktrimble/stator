@@ -8,6 +8,7 @@ import (
 
 	"github.com/clarktrimble/delish"
 	"github.com/clarktrimble/delish/graceful"
+	"github.com/clarktrimble/delish/minroute"
 	"github.com/clarktrimble/giant"
 	"github.com/clarktrimble/hondo"
 	"github.com/clarktrimble/launch"
@@ -15,7 +16,6 @@ import (
 
 	"stator/collector/diskusage"
 	"stator/collector/wave"
-	"stator/minroute"
 	"stator/roster"
 	"stator/roster/registrar/consul"
 )
