@@ -207,7 +207,7 @@ var _ = Describe("Roster", func() {
 				Expect(lgr.ErrorCalls()).To(HaveLen(1))
 				Expect(lgr.ErrorCalls()[0].Msg).To(Equal("worker abort"))
 
-				Expect(registrar.RegisterCalls()).To(HaveLen(0))
+				Expect(registrar.RegisterCalls()).To(BeEmpty())
 			})
 		})
 

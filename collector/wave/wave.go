@@ -100,9 +100,9 @@ func threeRandom() series {
 
 		n := float64(i) + 1
 		waves[i] = wave{
-			frequency: 1 + rand.Float64()*n,
-			amplitude: rand.Float64() / n,
-			phase:     rand.Float64() * 2 * math.Pi,
+			frequency: 1 + rand.Float64()*n,         //nolint: gosec
+			amplitude: rand.Float64() / n,           //nolint: gosec
+			phase:     rand.Float64() * 2 * math.Pi, //nolint: gosec
 		}
 	}
 

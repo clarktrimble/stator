@@ -3,6 +3,7 @@ package entity
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -18,7 +19,7 @@ type Uint struct {
 
 // String implements Stringer.
 func (val Uint) String() string {
-	return fmt.Sprintf("%d", val.Data)
+	return strconv.FormatUint(val.Data, 10)
 }
 
 // Float holds float64 values.

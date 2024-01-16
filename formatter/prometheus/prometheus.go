@@ -48,9 +48,9 @@ func (om Prometheus) Format(pa entity.PointsAt) []byte {
 
 	var buf bytes.Buffer
 	for _, hdr := range ordered {
-		buf.Write([]byte(hdr))
+		buf.WriteString(hdr)
 		for _, dtm := range out[hdr] {
-			buf.Write([]byte(dtm))
+			buf.WriteString(dtm)
 		}
 	}
 

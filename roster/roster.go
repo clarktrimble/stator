@@ -143,5 +143,10 @@ func getIp() string {
 	}
 	defer conn.Close()
 
-	return conn.LocalAddr().(*net.UDPAddr).IP.String()
+	localAddr, ok := conn.LocalAddr().(*net.UDPAddr)
+	if !ok {
+		return "somehow failed to assert type on ip addr"
+	}
+
+	return localAddr.IP.String()
 }

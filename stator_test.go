@@ -139,7 +139,9 @@ var _ = Describe("Stat", func() {
 
 				Expect(fmtr.FormatCalls()).To(HaveLen(1))
 
-				Expect(writer.(*httptest.ResponseRecorder).Body.String()).To(Equal("stuff"))
+				recorder, ok := writer.(*httptest.ResponseRecorder)
+				Expect(ok).To(BeTrue())
+				Expect(recorder.Body.String()).To(Equal("stuff"))
 			})
 		})
 

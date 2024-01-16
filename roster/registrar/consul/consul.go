@@ -50,9 +50,7 @@ func (cfg *Config) New(client Client) *Consul {
 // Register registers the service.
 func (csl *Consul) Register(ctx context.Context, svc entity.Service) (err error) {
 
-	// Todo: note about catalog reg
-	// Todo: support reregister, checking first?
-	//       or could long-poll
+	// Note: registering with agent, catalog register is another kettle of fish
 
 	reg := register{
 		ID:      svc.NameId(),
