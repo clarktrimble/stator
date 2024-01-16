@@ -1,10 +1,10 @@
 package diskusage
 
 import (
-	"syscall"
 	"time"
 
 	"github.com/pkg/errors"
+	"golang.org/x/sys/unix"
 
 	"stator/entity"
 )
@@ -85,14 +85,14 @@ func (du *DiskUsage) Collect(ts time.Time) (pa entity.PointsAt, err error) {
 
 func duStats(path string) (size, avail uint64, used float64, err error) {
 
-	fs := &syscall.Statfs_t{}
-	err = syscall.Statfs(path, fs)
+	fs := &unix.Statfs_t{}
+	err = unix.Statfs(path, fs)
 	if err != nil {
 		err = errors.Wrapf(err, "failed to get disk usage for %s", path)
 		return
 	}
 
-	bs := uint64(fs.Frsize)
+	bs := uint64(fs.Bsize)
 	size = fs.Blocks * bs
 	avail = fs.Bavail * bs
 
